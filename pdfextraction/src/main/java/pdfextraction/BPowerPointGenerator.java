@@ -1,5 +1,6 @@
 package pdfextraction;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,12 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import org.apache.poi.xslf.usermodel.SlideLayout;
-import org.apache.poi.xslf.usermodel.XMLSlideShow;
-import org.apache.poi.xslf.usermodel.XSLFSlide;
-import org.apache.poi.xslf.usermodel.XSLFSlideLayout;
-import org.apache.poi.xslf.usermodel.XSLFSlideMaster;
-import org.apache.poi.xslf.usermodel.XSLFTextShape;
+import org.apache.pdfbox.io.IOUtils;
+import org.apache.poi.xslf.usermodel.*;
 
 public class BPowerPointGenerator {
 
@@ -77,6 +74,30 @@ public class BPowerPointGenerator {
 
 	    slideBody.addNewTextParagraph().addNewTextRun().setText(bodyText);
 
+		if (presentation.get(i).getImage().size() != 0) {
+			for (int j = 0; j < presentation.get(i).getImage().size(); j++) {
+				XSLFSlide imgSlide = ppt.createSlide();
+				int imageNum = presentation.get(i).getImage().get(j) + 1;
+				File image = new File(projectRoot + "/pdfextraction/content/output/image_" + imageNum + ".png");
+				byte[] picture = IOUtils.toByteArray(new FileInputStream(image));
+				XSLFPictureData idx = ppt.addPicture(picture, XSLFPictureData.PictureType.PNG);
+				XSLFPictureShape pic = imgSlide.createPicture(idx);
+
+				// Calculate the center position of the slide
+				Dimension slideBounds = imgSlide.getSlideShow().getPageSize();
+				int centerX = slideBounds.width / 2;
+				int centerY = slideBounds.height / 2;
+
+				// Calculate the center position of the image
+				int imageWidth = pic.getPictureData().getImageDimension().width;
+				int imageHeight = pic.getPictureData().getImageDimension().height;
+				int imageX = centerX - (imageWidth / 2);
+				int imageY = centerY - (imageHeight / 2);
+
+				// Set the position of the image at the center
+				pic.setAnchor(new Rectangle(imageX, imageY, imageWidth, imageHeight));
+			}
+		}
 	}
 
 	// creating an FileOutputStream object
