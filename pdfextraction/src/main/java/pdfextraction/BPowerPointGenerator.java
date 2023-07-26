@@ -75,7 +75,7 @@ public class BPowerPointGenerator {
 
 	// creating an FileOutputStream object
 	File file = new File(presentation.get(0).getTitle() + ".pptx");
-	FileOutputStream out = new FileOutputStream(inputFileLocation + "/" + file);
+	FileOutputStream out = new FileOutputStream(inputFileLocation + "/output/" + file);
 
 	// saving the changes to a file
 	ppt.write(out);
