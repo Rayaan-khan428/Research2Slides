@@ -36,7 +36,7 @@ public class Main {
 
         // Read the JSON file
         JsonParser parser = new JsonParser();
-        JsonObject jsonObject = parser.parse(new FileReader(projectRoot + "/parsedPDF.json")).getAsJsonObject();
+        JsonObject jsonObject = parser.parse(new FileReader(projectRoot + "/pdfextraction/content/output/parsedPDF.json")).getAsJsonObject();
 
         // Extract the content from the "text" field
         String extractedText = jsonObject.get("text").getAsString();
