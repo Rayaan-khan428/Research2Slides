@@ -7,6 +7,11 @@ import com.google.gson.JsonObject;
 
 public class TextSummarizer {
 
+    /**
+     * summarize every paragraph for every slide in the arraylist and overwrite the non summarized paragraph
+     * @param presentation
+     * @throws InterruptedException
+     */
     public static void summarize(ArrayList<Slide> presentation) throws InterruptedException {
 
         // Create a Gson object
@@ -18,7 +23,7 @@ public class TextSummarizer {
             try {
 
                 AsyncHttpClient client = new DefaultAsyncHttpClient();
-                String apiKey = "";
+                String apiKey = "q88H9vLvPMgp25ouFSDrRSb3vLL8zwRH9y3jXBXr";
 
                 String text = presentation.get(i).getParagraph();
 

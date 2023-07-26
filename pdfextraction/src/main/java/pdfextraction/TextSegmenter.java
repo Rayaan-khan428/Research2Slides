@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,19 +33,15 @@ public class TextSegmenter {
         // keep track of pages, updated when new page is created
         int pageCount = 0;
 
-        // Not sure why this is needed but will keep for now
         // holds the essay in a formatted parsable format
         StringBuilder text = new StringBuilder();
 
         // breaks the massive string into individual lines by '\n' and stores as an index
         String[] allLines = extractedText.split("\\n");
 
-//        System.out.println("Length of textSections: " + allLines.length); // debugging
-
         // for every line in the allLines array, append it to text and add a new line
         for (String allLine : allLines) {
             text.append(allLine).append("\n");
-//            System.out.println(allLine);
         }
 
         // Use Java regex library to find numbers
@@ -72,7 +67,6 @@ public class TextSegmenter {
         else {
 
             // If no sections are identified after blank lines, split the text into paragraphs
-
             // splitting a multi-line string into an array of strings, using empty lines as the delimiters.
             String[] sections = text.toString().split("(?m)^\\s*$");
 
@@ -126,45 +120,26 @@ public class TextSegmenter {
 
                 // Check if the word count in the sectionBuilder meets the minimum requirement
                 if (wordCount >= MIN_WORDS_PER_SECTION) {
+
                     // Save the section into "sectionX.txt", where X is the section number (starting from 1)
-
-//                    String outputFilePath = inputFileLocation + "//section" + (sectionCount) + ".txt";
-//                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
-//                        writer.write(sectionBuilder.toString());
-//                        // Create slide object and add to array
-//
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-
                     presentation.add(new Slide(sectionCount, pageCount, firstLine, section));
                     sectionCount += 1;
 
                     // Reset sectionBuilder and wordCount for the next section
                     sectionBuilder.setLength(0);
                     wordCount = 0;
+
                 }
             }
 
             // Save the remaining text in sectionBuilder as the last section
             if (sectionBuilder.length() > 0) {
-
                 presentation.add(new Slide(sectionCount, pageCount, "--last section --", sectionBuilder.toString()));
-
-//                String outputFilePath = inputFileLocation + "//section" + sectionCount + ".txt";
-//                try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
-//                    writer.write(sectionBuilder.toString());
-//                    sectionCount += 1;
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
             }
         }
 
         // Call slide to match images to slides
         matchImages(presentation);
-
-
 
         // Display objects if you want to check titles and such
 //        for (Slide slide : presentation) {

@@ -32,18 +32,25 @@ import com.google.gson.stream.JsonWriter;
 import java.awt.image.BufferedImage;
 public class TextExtraction extends PDFStreamEngine {
 
-    // Used in naming images. Ex. image_1, image_2, etc. It is incremented when images are extracted
-    private int imageNumber = 1;
+    private int imageNumber = 1; // used in naming img's extracted from pdf
     private int pageNum = 0;
+
     private static ArrayList<Integer> array;
     private String outputFolder; // New instance variable to hold the output folder path
-    // Constructor to set the output folder path
 
+    // Constructor to set the output folder path
     public TextExtraction(String outputFolder) {
         this.outputFolder = outputFolder;
         this.array = new ArrayList<>();
     }
 
+    /**
+     * Calls every method needed to extract text, pageNum, and images
+     *
+     * @param document
+     * @param projectRoot
+     * @throws IOException
+     */
     public void runExtraction(PDDocument document, String projectRoot) throws IOException {
 
         SaveImagesInPdf(document);
@@ -53,6 +60,12 @@ public class TextExtraction extends PDFStreamEngine {
 
     }
 
+    /**
+     * finds all images and saves them into designated directory
+     *
+     * @param document
+     * @throws IOException
+     */
     public void SaveImagesInPdf(PDDocument document) throws IOException {
         try {
             for (PDPage page : document.getPages()) {
@@ -79,8 +92,8 @@ public class TextExtraction extends PDFStreamEngine {
 
         String sPage = ""; // start page
         String ePage = ""; // end page
-        String text = "";
-        String text2 = "";
+        String text = ""; // main string (entire pdf is in this one string)
+        String text2 = ""; //
         List<String> lines;
 
         for (int pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
@@ -91,16 +104,18 @@ public class TextExtraction extends PDFStreamEngine {
             sPage = "***START OF PAGE " + pageNumber + "***\n";
             ePage = "***END OF PAGE " + pageNumber + "***\n";
 
-            text2 = pdfStripper.getText(document); // converts entire pdf to text
+            text2 = pdfStripper.getText(document); // converts entire pdf to a string and store into text2
             lines = detectLines(text2); // returns the entire pdf as an ArrayList, each line is an item
 
-            text += sPage;
+            text += sPage; // append starting page number
+
+            // if the lines extracted are readable and long enough, append them to text variable
             for (String line : lines) {
                 if(!junkTest(line) && line.length() > 3) {
                     text+= line + "\n";
                 }
             }
-            text += ePage + "\n";
+            text += ePage + "\n"; // append ending page number
 
         }
 
@@ -239,4 +254,5 @@ public class TextExtraction extends PDFStreamEngine {
         }
         return true;
     }
+
 }

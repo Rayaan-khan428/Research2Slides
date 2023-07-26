@@ -2,20 +2,10 @@ package pdfextraction;
 
 import java.io.File;
 import java.io.IOException;
-
-import com.google.gson.stream.JsonReader;
 import org.apache.pdfbox.pdmodel.PDDocument;
-
 import java.io.FileReader;
-import java.io.IOException;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
@@ -58,7 +48,7 @@ public class Main {
         TextSummarizer.summarize(presentation);
 
         // generate powerpoint
-        PowerPointGenerator.create(presentation, projectRoot);
+        BPowerPointGenerator.create(projectRoot, presentation);
 
         document.close();
 
