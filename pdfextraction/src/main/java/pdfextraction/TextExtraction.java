@@ -135,7 +135,7 @@ public class TextExtraction extends PDFStreamEngine {
         String json = gsonWithEscapeHtml.toJson(pdfContent);
 
         // Save the JSON string to a file or use it as needed
-        try (FileWriter fileWriter = new FileWriter(projectRoot + "/output/parsedPDF.json")) {
+        try (FileWriter fileWriter = new FileWriter(projectRoot + "/parsedPDF.json")) {
             fileWriter.write(json);
             System.out.println("JSON data has been written to 'output.json' successfully.");
         } catch (IOException e) {
