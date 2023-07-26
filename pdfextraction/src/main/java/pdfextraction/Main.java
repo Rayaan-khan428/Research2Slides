@@ -9,10 +9,11 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 
 public class Main {
+
     public static void main(String[] args) throws IOException, InterruptedException {
 
         // stores presentation objects
-        ArrayList<Slide> presentation = new ArrayList<>();
+        ArrayList<Slide> presentation;
 
         String projectRoot = System.getProperty("user.dir");
 
