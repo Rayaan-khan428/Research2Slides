@@ -16,16 +16,22 @@ import org.apache.poi.xslf.usermodel.XSLFTextShape;
 
 public class BPowerPointGenerator {
 
-    public static void create(String inputFileLocation, ArrayList<Slide> presentation) throws IOException {
+	/**
+	 *
+	 * @param projectRoot - root path of project
+	 * @param presentation - arraylist containing all the slides
+	 * @throws IOException
+	 */
+    public static void create(String projectRoot, ArrayList<Slide> presentation) throws IOException {
 
 	// Get the template folder path (project directory)
-	String template = System.getProperty("user.dir");
-	template += "/pdfextraction/templates/Pine design.pptx";
+
+	String templatePath = projectRoot + "/pdfextraction/content/templates/Pine design.pptx";
 
 	// Use template for PowerPoint
-	XMLSlideShow ppt = new XMLSlideShow(new FileInputStream(template));
+	XMLSlideShow ppt = new XMLSlideShow(new FileInputStream(templatePath));
 
-	// Delete all existing slides in template before use
+	// Delete any existing slides in template
 	for (int i = ppt.getSlides().size() - 1; i >= 0; i--) {
 	    ppt.removeSlide(i);
 	}
@@ -75,7 +81,7 @@ public class BPowerPointGenerator {
 
 	// creating an FileOutputStream object
 	File file = new File(presentation.get(0).getTitle() + ".pptx");
-	FileOutputStream out = new FileOutputStream(inputFileLocation + "/output/" + file);
+	FileOutputStream out = new FileOutputStream(projectRoot + "/pdfextraction/content/output/" + file);
 
 	// saving the changes to a file
 	ppt.write(out);
