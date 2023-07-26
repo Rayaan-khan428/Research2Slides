@@ -20,16 +20,23 @@ public class TextSummarizer {
         for (int i = 0; i <  presentation.size(); i++) {
 
             Response response = null;
+            JsonObject jsonObject = null;
             try {
 
                 AsyncHttpClient client = new DefaultAsyncHttpClient();
                 String apiKey = "q88H9vLvPMgp25ouFSDrRSb3vLL8zwRH9y3jXBXr";
 
                 String text = presentation.get(i).getParagraph();
+                String summary = "";
 
                 String regex = "\\*{3}(?:END|START) OF PAGE \\d+\\*{3}";
+                String quotations = "(?<!\\\\)\"";
+
                 String preSummarization = text.replaceAll(regex, "");
                 preSummarization = preSummarization.replaceAll("\\s+", " ").trim();
+                preSummarization = preSummarization.replaceAll(quotations, "\\\\\"");
+
+                presentation.get(i).setParagraph(preSummarization); // if less than 250 chars we still have something to put
 
                 String requestBody = String.format("{\"text\":\"%s\", \"length\":\"short\", \"format\":\"bullets\", \"model\":\"summarize-xlarge\"}", preSummarization);
 
@@ -44,18 +51,25 @@ public class TextSummarizer {
                 response = client.executeRequest(request).get();
 
                 // Parse the JSON string to a JsonObject
-                JsonObject jsonObject = gson.fromJson(response.getResponseBody(), JsonObject.class);
+                jsonObject = gson.fromJson(response.getResponseBody(), JsonObject.class);
 
-                // Extract the "summary" attribute
-                String summary = jsonObject.get("summary").getAsString();
+                if (jsonObject.has("summary") && !jsonObject.get("summary").isJsonNull()) {
+                    // Extract the "summary" attribute
+                    summary = jsonObject.get("summary").getAsString();
 
-                summary = summary.replaceAll(regex, "");
+                } else {
+                    // Handle the case where "summary" attribute is missing or null
+                    summary = preSummarization;
+                }
 
                 // update presentation paragraph to bullet points
+                summary = summary.replaceAll("-", "");
                 presentation.get(i).setParagraph(summary);
 
                 System.out.println("-----------------------Text Being Summarized----------------------");
-                System.out.println("PreSummarization: ");
+                System.out.println("\nRaw Json for Debugging: ");
+                System.out.println(response.getResponseBody());
+                System.out.println("\nPreSummarization: ");
                 System.out.println(preSummarization);
                 System.out.println("\nAfterSummarization: ");
                 System.out.println(summary);
@@ -63,9 +77,6 @@ public class TextSummarizer {
 
                 client.close();
 
-            } catch (NullPointerException e) {
-                assert response != null;
-                System.out.println(response.getResponseBody());
             } catch (Exception e) {
                 e.printStackTrace();
             }
