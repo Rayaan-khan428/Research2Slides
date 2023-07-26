@@ -104,12 +104,7 @@ public class TextSegmenter {
                     firstLine = firstLine.replaceAll("^\\s+", "");
                 }
 
-                // Determine if the page ends during the paragraph and if so add 1 to page count
-                for (String SingleLine : lines) {
-                    if(SingleLine.startsWith("***START OF PAGE")) {
-                        pageCount += 1;
-                    }
-                }
+                
 
                 // Count the words in the current paragraph
                 int paragraphWordCount = section.split("\\s+").length;
@@ -124,13 +119,20 @@ public class TextSegmenter {
                     // Save the section into "sectionX.txt", where X is the section number (starting from 1)
                     presentation.add(new Slide(sectionCount, pageCount, firstLine, section));
                     sectionCount += 1;
+                    
+                    // Determine if the page ends during the paragraph and if so add 1 to page count
+                    for (String SingleLine : lines) {
+                        if(SingleLine.startsWith("***START OF PAGE")) {
+                            pageCount += 1;
+                        }
+                    }
 
                     // Reset sectionBuilder and wordCount for the next section
                     sectionBuilder.setLength(0);
                     wordCount = 0;
 
                 }
-            }
+            }       
 
             // Save the remaining text in sectionBuilder as the last section
             if (sectionBuilder.length() > 0) {
